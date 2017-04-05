@@ -1,0 +1,920 @@
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Coverage report</title>
+    <link rel="stylesheet" href="style.css" type="text/css">
+    
+    <script type="text/javascript" src="jquery.min.js"></script>
+    <script type="text/javascript" src="jquery.ba-throttle-debounce.min.js"></script>
+    <script type="text/javascript" src="jquery.tablesorter.min.js"></script>
+    <script type="text/javascript" src="jquery.hotkeys.js"></script>
+    <script type="text/javascript" src="coverage_html.js"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(coverage.index_ready);
+    </script>
+</head>
+<body class="indexfile">
+
+<div id="header">
+    <div class="content">
+        <h1>Coverage report:
+            <span class="pc_cov">28%</span>
+        </h1>
+
+        <img id="keyboard_icon" src="keybd_closed.png" alt="Show keyboard shortcuts" />
+
+        <form id="filter_container">
+            <input id="filter" type="text" value="" placeholder="filter..." />
+        </form>
+    </div>
+</div>
+
+<div class="help_panel">
+    <img id="panel_icon" src="keybd_open.png" alt="Hide keyboard shortcuts" />
+    <p class="legend">Hot-keys on this page</p>
+    <div>
+    <p class="keyhelp">
+        <span class="key">n</span>
+        <span class="key">s</span>
+        <span class="key">m</span>
+        <span class="key">x</span>
+        
+        <span class="key">b</span>
+        <span class="key">p</span>
+        
+        <span class="key">c</span> &nbsp; change column sorting
+    </p>
+    </div>
+</div>
+
+<div id="index">
+    <table class="index">
+        <thead>
+            
+            <tr class="tablehead" title="Click to sort">
+                <th class="name left headerSortDown shortkey_n">Module</th>
+                <th class="shortkey_s">statements</th>
+                <th class="shortkey_m">missing</th>
+                <th class="shortkey_x">excluded</th>
+                
+                <th class="shortkey_b">branches</th>
+                <th class="shortkey_p">partial</th>
+                
+                <th class="right shortkey_c">coverage</th>
+            </tr>
+        </thead>
+        
+        <tfoot>
+            <tr class="total">
+                <td class="name left">Total</td>
+                <td>16008</td>
+                <td>10596</td>
+                <td>8</td>
+                
+                <td>6179</td>
+                <td>481</td>
+                
+                <td class="right" data-ratio="6149 22187">28%</td>
+            </tr>
+        </tfoot>
+        <tbody>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_click___init___py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/click/__init__.py</a></td>
+                <td>13</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="13 13">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_click__compat_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/click/_compat.py</a></td>
+                <td>403</td>
+                <td>321</td>
+                <td>0</td>
+                
+                <td>140</td>
+                <td>10</td>
+                
+                <td class="right" data-ratio="92 543">17%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_click__unicodefun_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/click/_unicodefun.py</a></td>
+                <td>66</td>
+                <td>43</td>
+                <td>0</td>
+                
+                <td>38</td>
+                <td>5</td>
+                
+                <td class="right" data-ratio="30 104">29%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_click_core_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/click/core.py</a></td>
+                <td>819</td>
+                <td>577</td>
+                <td>0</td>
+                
+                <td>374</td>
+                <td>26</td>
+                
+                <td class="right" data-ratio="282 1193">24%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_click_decorators_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/click/decorators.py</a></td>
+                <td>144</td>
+                <td>84</td>
+                <td>0</td>
+                
+                <td>38</td>
+                <td>6</td>
+                
+                <td class="right" data-ratio="68 182">37%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_click_exceptions_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/click/exceptions.py</a></td>
+                <td>98</td>
+                <td>70</td>
+                <td>0</td>
+                
+                <td>42</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="28 140">20%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_click_formatting_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/click/formatting.py</a></td>
+                <td>134</td>
+                <td>112</td>
+                <td>0</td>
+                
+                <td>54</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="22 188">12%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_click_globals_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/click/globals.py</a></td>
+                <td>18</td>
+                <td>12</td>
+                <td>0</td>
+                
+                <td>6</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="6 24">25%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_click_parser_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/click/parser.py</a></td>
+                <td>236</td>
+                <td>203</td>
+                <td>0</td>
+                
+                <td>112</td>
+                <td>1</td>
+                
+                <td class="right" data-ratio="36 348">10%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_click_termui_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/click/termui.py</a></td>
+                <td>176</td>
+                <td>149</td>
+                <td>0</td>
+                
+                <td>66</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="27 242">11%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_click_types_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/click/types.py</a></td>
+                <td>270</td>
+                <td>175</td>
+                <td>0</td>
+                
+                <td>98</td>
+                <td>6</td>
+                
+                <td class="right" data-ratio="107 368">29%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_click_utils_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/click/utils.py</a></td>
+                <td>167</td>
+                <td>115</td>
+                <td>0</td>
+                
+                <td>74</td>
+                <td>4</td>
+                
+                <td class="right" data-ratio="62 241">26%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_flask___init___py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/flask/__init__.py</a></td>
+                <td>17</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="17 17">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_flask__compat_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/flask/_compat.py</a></td>
+                <td>52</td>
+                <td>35</td>
+                <td>0</td>
+                
+                <td>26</td>
+                <td>6</td>
+                
+                <td class="right" data-ratio="23 78">29%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_flask_app_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/flask/app.py</a></td>
+                <td>563</td>
+                <td>280</td>
+                <td>0</td>
+                
+                <td>190</td>
+                <td>41</td>
+                
+                <td class="right" data-ratio="336 753">45%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_flask_blueprints_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/flask/blueprints.py</a></td>
+                <td>157</td>
+                <td>118</td>
+                <td>0</td>
+                
+                <td>56</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="39 213">18%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_flask_cli_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/flask/cli.py</a></td>
+                <td>250</td>
+                <td>190</td>
+                <td>0</td>
+                
+                <td>82</td>
+                <td>3</td>
+                
+                <td class="right" data-ratio="63 332">19%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_flask_config_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/flask/config.py</a></td>
+                <td>90</td>
+                <td>61</td>
+                <td>0</td>
+                
+                <td>38</td>
+                <td>2</td>
+                
+                <td class="right" data-ratio="31 128">24%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_flask_ctx_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/flask/ctx.py</a></td>
+                <td>151</td>
+                <td>45</td>
+                <td>0</td>
+                
+                <td>40</td>
+                <td>15</td>
+                
+                <td class="right" data-ratio="121 191">63%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_flask_globals_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/flask/globals.py</a></td>
+                <td>26</td>
+                <td>9</td>
+                <td>0</td>
+                
+                <td>6</td>
+                <td>1</td>
+                
+                <td class="right" data-ratio="18 32">56%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_flask_helpers_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/flask/helpers.py</a></td>
+                <td>317</td>
+                <td>212</td>
+                <td>0</td>
+                
+                <td>146</td>
+                <td>14</td>
+                
+                <td class="right" data-ratio="121 463">26%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_flask_json_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/flask/json.py</a></td>
+                <td>87</td>
+                <td>61</td>
+                <td>0</td>
+                
+                <td>30</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="26 117">22%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_flask_sessions_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/flask/sessions.py</a></td>
+                <td>143</td>
+                <td>81</td>
+                <td>0</td>
+                
+                <td>48</td>
+                <td>2</td>
+                
+                <td class="right" data-ratio="64 191">34%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_flask_signals_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/flask/signals.py</a></td>
+                <td>29</td>
+                <td>2</td>
+                <td>0</td>
+                
+                <td>2</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="29 31">94%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_flask_templating_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/flask/templating.py</a></td>
+                <td>82</td>
+                <td>65</td>
+                <td>0</td>
+                
+                <td>30</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="17 112">15%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_flask_testing_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/flask/testing.py</a></td>
+                <td>65</td>
+                <td>33</td>
+                <td>0</td>
+                
+                <td>18</td>
+                <td>3</td>
+                
+                <td class="right" data-ratio="35 83">42%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_flask_wrappers_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/flask/wrappers.py</a></td>
+                <td>74</td>
+                <td>50</td>
+                <td>0</td>
+                
+                <td>28</td>
+                <td>1</td>
+                
+                <td class="right" data-ratio="25 102">25%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_itsdangerous_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/itsdangerous.py</a></td>
+                <td>413</td>
+                <td>293</td>
+                <td>0</td>
+                
+                <td>102</td>
+                <td>3</td>
+                
+                <td class="right" data-ratio="123 515">24%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_jinja2___init___py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/jinja2/__init__.py</a></td>
+                <td>18</td>
+                <td>2</td>
+                <td>0</td>
+                
+                <td>2</td>
+                <td>1</td>
+                
+                <td class="right" data-ratio="17 20">85%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_jinja2__compat_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/jinja2/_compat.py</a></td>
+                <td>63</td>
+                <td>25</td>
+                <td>0</td>
+                
+                <td>22</td>
+                <td>5</td>
+                
+                <td class="right" data-ratio="45 85">53%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_jinja2_bccache_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/jinja2/bccache.py</a></td>
+                <td>161</td>
+                <td>118</td>
+                <td>0</td>
+                
+                <td>42</td>
+                <td>1</td>
+                
+                <td class="right" data-ratio="44 203">22%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_jinja2_compiler_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/jinja2/compiler.py</a></td>
+                <td>1094</td>
+                <td>948</td>
+                <td>0</td>
+                
+                <td>459</td>
+                <td>1</td>
+                
+                <td class="right" data-ratio="147 1553">9%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_jinja2_defaults_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/jinja2/defaults.py</a></td>
+                <td>20</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>2</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="22 22">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_jinja2_environment_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/jinja2/environment.py</a></td>
+                <td>515</td>
+                <td>410</td>
+                <td>0</td>
+                
+                <td>181</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="109 696">16%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_jinja2_exceptions_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/jinja2/exceptions.py</a></td>
+                <td>70</td>
+                <td>47</td>
+                <td>0</td>
+                
+                <td>28</td>
+                <td>1</td>
+                
+                <td class="right" data-ratio="28 98">29%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_jinja2_filters_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/jinja2/filters.py</a></td>
+                <td>356</td>
+                <td>274</td>
+                <td>0</td>
+                
+                <td>146</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="82 502">16%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_jinja2_idtracking_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/jinja2/idtracking.py</a></td>
+                <td>195</td>
+                <td>149</td>
+                <td>0</td>
+                
+                <td>86</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="46 281">16%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_jinja2_lexer_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/jinja2/lexer.py</a></td>
+                <td>351</td>
+                <td>232</td>
+                <td>0</td>
+                
+                <td>137</td>
+                <td>1</td>
+                
+                <td class="right" data-ratio="129 488">26%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_jinja2_loaders_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/jinja2/loaders.py</a></td>
+                <td>223</td>
+                <td>170</td>
+                <td>0</td>
+                
+                <td>68</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="53 291">18%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_jinja2_nodes_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/jinja2/nodes.py</a></td>
+                <td>433</td>
+                <td>228</td>
+                <td>0</td>
+                
+                <td>131</td>
+                <td>2</td>
+                
+                <td class="right" data-ratio="210 564">37%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_jinja2_optimizer_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/jinja2/optimizer.py</a></td>
+                <td>17</td>
+                <td>8</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="9 17">53%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_jinja2_parser_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/jinja2/parser.py</a></td>
+                <td>639</td>
+                <td>580</td>
+                <td>0</td>
+                
+                <td>279</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="59 918">6%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_jinja2_runtime_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/jinja2/runtime.py</a></td>
+                <td>397</td>
+                <td>277</td>
+                <td>0</td>
+                
+                <td>148</td>
+                <td>10</td>
+                
+                <td class="right" data-ratio="138 545">25%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_jinja2_tests_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/jinja2/tests.py</a></td>
+                <td>55</td>
+                <td>27</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="28 55">51%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_jinja2_utils_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/jinja2/utils.py</a></td>
+                <td>295</td>
+                <td>205</td>
+                <td>0</td>
+                
+                <td>82</td>
+                <td>1</td>
+                
+                <td class="right" data-ratio="93 377">25%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_jinja2_visitor_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/jinja2/visitor.py</a></td>
+                <td>40</td>
+                <td>31</td>
+                <td>0</td>
+                
+                <td>22</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="9 62">15%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_markupsafe___init___py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/markupsafe/__init__.py</a></td>
+                <td>156</td>
+                <td>89</td>
+                <td>0</td>
+                
+                <td>58</td>
+                <td>10</td>
+                
+                <td class="right" data-ratio="79 214">37%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_markupsafe__compat_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/markupsafe/_compat.py</a></td>
+                <td>14</td>
+                <td>5</td>
+                <td>0</td>
+                
+                <td>6</td>
+                <td>2</td>
+                
+                <td class="right" data-ratio="11 20">55%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_werkzeug___init___py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/werkzeug/__init__.py</a></td>
+                <td>29</td>
+                <td>8</td>
+                <td>0</td>
+                
+                <td>10</td>
+                <td>2</td>
+                
+                <td class="right" data-ratio="27 39">69%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_werkzeug__compat_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/werkzeug/_compat.py</a></td>
+                <td>148</td>
+                <td>71</td>
+                <td>0</td>
+                
+                <td>67</td>
+                <td>9</td>
+                
+                <td class="right" data-ratio="101 215">47%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_werkzeug__internal_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/werkzeug/_internal.py</a></td>
+                <td>238</td>
+                <td>164</td>
+                <td>0</td>
+                
+                <td>86</td>
+                <td>3</td>
+                
+                <td class="right" data-ratio="87 324">27%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_werkzeug_datastructures_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/werkzeug/datastructures.py</a></td>
+                <td>1316</td>
+                <td>828</td>
+                <td>0</td>
+                
+                <td>516</td>
+                <td>38</td>
+                
+                <td class="right" data-ratio="554 1832">30%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_werkzeug_exceptions_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/werkzeug/exceptions.py</a></td>
+                <td>192</td>
+                <td>37</td>
+                <td>0</td>
+                
+                <td>26</td>
+                <td>3</td>
+                
+                <td class="right" data-ratio="166 218">76%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_werkzeug_filesystem_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/werkzeug/filesystem.py</a></td>
+                <td>22</td>
+                <td>13</td>
+                <td>0</td>
+                
+                <td>6</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="9 28">32%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_werkzeug_formparser_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/werkzeug/formparser.py</a></td>
+                <td>242</td>
+                <td>193</td>
+                <td>4</td>
+                
+                <td>100</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="49 342">14%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_werkzeug_http_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/werkzeug/http.py</a></td>
+                <td>407</td>
+                <td>348</td>
+                <td>4</td>
+                
+                <td>226</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="59 633">9%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_werkzeug_local_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/werkzeug/local.py</a></td>
+                <td>215</td>
+                <td>68</td>
+                <td>0</td>
+                
+                <td>140</td>
+                <td>63</td>
+                
+                <td class="right" data-ratio="212 355">60%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_werkzeug_routing_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/werkzeug/routing.py</a></td>
+                <td>629</td>
+                <td>308</td>
+                <td>0</td>
+                
+                <td>274</td>
+                <td>45</td>
+                
+                <td class="right" data-ratio="400 903">44%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_werkzeug_test_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/werkzeug/test.py</a></td>
+                <td>467</td>
+                <td>225</td>
+                <td>0</td>
+                
+                <td>178</td>
+                <td>45</td>
+                
+                <td class="right" data-ratio="289 645">45%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_werkzeug_urls_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/werkzeug/urls.py</a></td>
+                <td>415</td>
+                <td>186</td>
+                <td>0</td>
+                
+                <td>205</td>
+                <td>42</td>
+                
+                <td class="right" data-ratio="302 620">49%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_werkzeug_utils_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/werkzeug/utils.py</a></td>
+                <td>243</td>
+                <td>162</td>
+                <td>0</td>
+                
+                <td>98</td>
+                <td>6</td>
+                
+                <td class="right" data-ratio="89 341">26%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_werkzeug_wrappers_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/werkzeug/wrappers.py</a></td>
+                <td>605</td>
+                <td>300</td>
+                <td>0</td>
+                
+                <td>202</td>
+                <td>30</td>
+                
+                <td class="right" data-ratio="359 807">44%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="_home_wgonczaronek__virtualenvs_venv_lib_python2_7_site-packages_werkzeug_wsgi_py.html">/home/wgonczaronek/.virtualenvs/venv/lib/python2.7/site-packages/werkzeug/wsgi.py</a></td>
+                <td>542</td>
+                <td>433</td>
+                <td>0</td>
+                
+                <td>250</td>
+                <td>9</td>
+                
+                <td class="right" data-ratio="128 792">16%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="src_presence_analyzer___init___py.html">src/presence_analyzer/__init__.py</a></td>
+                <td>1</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="1 1">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="src_presence_analyzer_main_py.html">src/presence_analyzer/main.py</a></td>
+                <td>6</td>
+                <td>0</td>
+                <td>0</td>
+                
+                <td>0</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="6 6">100%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="src_presence_analyzer_tests_py.html">src/presence_analyzer/tests.py</a></td>
+                <td>45</td>
+                <td>4</td>
+                <td>0</td>
+                
+                <td>2</td>
+                <td>1</td>
+                
+                <td class="right" data-ratio="42 47">89%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="src_presence_analyzer_utils_py.html">src/presence_analyzer/utils.py</a></td>
+                <td>42</td>
+                <td>12</td>
+                <td>0</td>
+                
+                <td>6</td>
+                <td>1</td>
+                
+                <td class="right" data-ratio="33 48">69%</td>
+            </tr>
+            
+            <tr class="file">
+                <td class="name left"><a href="src_presence_analyzer_views_py.html">src/presence_analyzer/views.py</a></td>
+                <td>32</td>
+                <td>15</td>
+                <td>0</td>
+                
+                <td>4</td>
+                <td>0</td>
+                
+                <td class="right" data-ratio="17 36">47%</td>
+            </tr>
+            
+        </tbody>
+    </table>
+
+    <p id="no_rows">
+        No items found using the specified filter.
+    </p>
+</div>
+
+<div id="footer">
+    <div class="content">
+        <p>
+            <a class="nav" href="https://coverage.readthedocs.io">coverage.py v4.3.4</a>,
+            created at 2017-04-05 14:42
+        </p>
+    </div>
+</div>
+
+</body>
+</html>

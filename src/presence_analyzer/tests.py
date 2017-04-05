@@ -2,11 +2,15 @@
 """
 Presence analyzer unit tests.
 """
+import sys
 import os.path
 import json
 import datetime
 import unittest
 import testfixtures
+
+# sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+# print os.path.join(os.path.dirname(__file__))
 
 from presence_analyzer import main, views, utils
 
