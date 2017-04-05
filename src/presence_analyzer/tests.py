@@ -2,17 +2,14 @@
 """
 Presence analyzer unit tests.
 """
-import sys
 import os.path
 import json
 import datetime
 import unittest
 import testfixtures
 
-# sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-# print os.path.join(os.path.dirname(__file__))
 
-from presence_analyzer import main, views, utils
+from presence_analyzer import main, utils
 
 TEST_DATA_CSV = os.path.join(
     os.path.dirname(__file__), '..', '..', 'runtime', 'data', 'test_data.csv'
@@ -65,7 +62,7 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         self.assertEqual(len(data), 2)
         self.assertDictEqual(data[0], {u'user_id': 10, u'name': u'User 10'})
 
-    def test_presence_weekday_returns_404_on_no_user_id(self):
+    def test_presence_weekday_wrong_id(self):
         """
         Test data contains ids: 10 and 11. Giving number -1 should result in 404 exit code
         Test status code is 404
@@ -96,7 +93,7 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         self.assertEqual(data[u'Sat'], 0)
         self.assertEqual(data[u'Sun'], 0)
 
-    def test_mean_time_weekday_returns_404_on_no_user_id(self):
+    def test_mean_time_wrong_id(self):
         """
         Test data contains ids: 10 and 11. Giving number -1 should result in 404 exit code
         Test status code is 404
@@ -159,7 +156,7 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
             datetime.time(9, 39, 5)
         )
 
-    def test_seconds_since_midnight_return_correct_time(self):
+    def test_seconds_since_midnight(self):
         """
         Test time elapsed with different time set. Special case: midnight.
         """
@@ -172,7 +169,7 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         self.assertEqual(utils.seconds_since_midnight(minute_after_midnight), 60)
         self.assertEqual(utils.seconds_since_midnight(hour_after_midnight), 3600)
 
-    def test_interval_returns_correct_interval(self):
+    def test_interval(self):
         """
         Test interval
         """
@@ -180,20 +177,20 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         stop = datetime.time(1, 1, 1)
         self.assertEqual(utils.interval(start, stop), 3661)
 
-    def test_mean_returns_zero_for_empty_list(self):
+    def test_mean_with_empty_list(self):
         """
         Mean checks whether provided list is empty and returns 0 if so.
         """
         self.assertEqual(utils.mean([]), 0)
 
-    def test_mean_within_1_percent_accuracy_for_non_empty_list(self):
+    def test_mean_with_non_empty_list(self):
         """
         Count mean and assert it provides 3-point accuracy.
         """
         items = [1, 2]
         self.assertAlmostEqual(utils.mean(items), 1.5, 3)
 
-    def test_invalid_data_exception_is_caught(self):
+    def test_invalid_data_handled(self):
         """
         Captures log and checks whether 'Problem with line' message is found.
         """
@@ -205,9 +202,10 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
             except UnboundLocalError:
                 pass
             main.app.config.update({'DATA_CSV': TEST_DATA_CSV})
-            self.assertTrue(any(filter(lambda x: 'Problem with line' in x.msg, log_capture.records)))
+            self.assertTrue(any(filter(lambda x:
+                                       'Problem with line' in x.msg, log_capture.records)))
 
-    def test_header_and_footer_is_omitted(self):
+    def test_header_and_footer_omitted(self):
         """
         Works exactly as test_get_data, however, the file it works on contains footers and headers
         """
