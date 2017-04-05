@@ -87,8 +87,30 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
             datetime.time(9, 39, 5)
         )
 
+    def test_seconds_since_midnight_return_correct_time(self):
+        midnight_time = datetime.time(0, 0, 0)
+        second_after_midnight = datetime.time(0, 0, 1)
+        minute_after_midnight = datetime.time(0, 1, 0)
+        hour_after_midnight = datetime.time(1, 0, 0)
+        self.assertEqual(utils.seconds_since_midnight(midnight_time), 0)
+        self.assertEqual(utils.seconds_since_midnight(second_after_midnight), 1)
+        self.assertEqual(utils.seconds_since_midnight(minute_after_midnight), 60)
+        self.assertEqual(utils.seconds_since_midnight(hour_after_midnight), 3600)
 
-def suite():
+    def test_interval_returns_correct_interval(self):
+        start = datetime.time(0, 0, 0)
+        stop = datetime.time(1, 1, 1)
+        self.assertEqual(utils.interval(start, stop), 3661)
+
+    def test_mean_returns_zero_for_empty_list(self):
+        self.assertEqual(utils.mean([]), 0)
+
+    def test_mean_within_1_percent_accuracy_for_non_empty_list(self):
+        items = [1, 2]
+        self.assertAlmostEqual(utils.mean(items), 1.5, 3)
+
+
+def suite():  # pragma: no cover
     """
     Default test suite.
     """
@@ -98,5 +120,5 @@ def suite():
     return base_suite
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     unittest.main()
