@@ -61,6 +61,67 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         self.assertEqual(len(data), 2)
         self.assertDictEqual(data[0], {u'user_id': 10, u'name': u'User 10'})
 
+    def test_presence_weekday_returns_404_on_no_user_id(self):
+        """
+        Test data contains ids: 10 and 11. Giving number -1 should result in 404 exit code
+        Test status code is 404
+        """
+        response = self.client.get('/api/v1/presence_weekday/1')
+        self.assertEqual(response.status_code, 404)
+
+    def test_presence_weekday_view(self):
+        """
+        Test json response for user 10
+        From test_data.csv:
+        2013-09-10: Tuesday 30047 seconds
+        2013-09-11: Wednesday 24465 seconds
+        2013-09-12: Thursday 23705 seconds
+        """
+        response = self.client.get('/api/v1/presence_weekday/10')
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data)
+        # Change to dict for easier checks
+        data = dict(data)
+        self.assertEqual(len(data), 8)
+        self.assertEqual(data[u'Weekday'], u'Presence (s)')
+        self.assertEqual(data[u'Mon'], 0)
+        self.assertEqual(data[u'Tue'], 30047)
+        self.assertEqual(data[u'Wed'], 24465)
+        self.assertEqual(data[u'Thu'], 23705)
+        self.assertEqual(data[u'Fri'], 0)
+        self.assertEqual(data[u'Sat'], 0)
+        self.assertEqual(data[u'Sun'], 0)
+
+    def test_mean_time_weekday_returns_404_on_no_user_id(self):
+        """
+        Test data contains ids: 10 and 11. Giving number -1 should result in 404 exit code
+        Test status code is 404
+        """
+        response = self.client.get('/api/v1/mean_time_weekday/1')
+        self.assertEqual(response.status_code, 404)
+
+    def test_mean_time_weekday_view(self):
+        """
+        Test json response for user 10
+        From test_data.csv:
+        2013-09-10: Tuesday 30047 seconds
+        2013-09-11: Wednesday 24465 seconds
+        2013-09-12: Thursday 23705 seconds
+        """
+        response = self.client.get('/api/v1/mean_time_weekday/10')
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data)
+        # Change to dict for easier checks
+        data = dict(data)
+        self.assertEqual(len(data), 7)
+        self.assertEqual(data[u'Mon'], 0)
+        self.assertEqual(data[u'Tue'], 30047)
+        self.assertEqual(data[u'Wed'], 24465)
+        self.assertEqual(data[u'Thu'], 23705)
+        self.assertEqual(data[u'Fri'], 0)
+        self.assertEqual(data[u'Sat'], 0)
+        self.assertEqual(data[u'Sun'], 0)
+
 
 class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
     """
