@@ -6,13 +6,20 @@ import os.path
 import json
 import datetime
 import unittest
-
+import testfixtures
 
 from presence_analyzer import main, views, utils
 
-
 TEST_DATA_CSV = os.path.join(
     os.path.dirname(__file__), '..', '..', 'runtime', 'data', 'test_data.csv'
+)
+
+TEST_DATA_WITH_HEADER_AND_FOOTER = os.path.join(
+    os.path.dirname(__file__), '..', '..', 'runtime', 'data', 'test_data_with_header_and_footer.csv'
+)
+
+INVALID_FORMAT_TEST_DATA = os.path.join(
+    os.path.dirname(__file__), '..', '..', 'runtime', 'data', 'invalid_format_test_data.csv'
 )
 
 
@@ -88,6 +95,9 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         )
 
     def test_seconds_since_midnight_return_correct_time(self):
+        """
+        Test time elapsed with different time set. Special case: midnight.
+        """
         midnight_time = datetime.time(0, 0, 0)
         second_after_midnight = datetime.time(0, 0, 1)
         minute_after_midnight = datetime.time(0, 1, 0)
@@ -98,16 +108,71 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         self.assertEqual(utils.seconds_since_midnight(hour_after_midnight), 3600)
 
     def test_interval_returns_correct_interval(self):
+        """
+        Test interval
+        """
         start = datetime.time(0, 0, 0)
         stop = datetime.time(1, 1, 1)
         self.assertEqual(utils.interval(start, stop), 3661)
 
     def test_mean_returns_zero_for_empty_list(self):
+        """
+        Mean checks whether provided list is empty and returns 0 if so.
+        """
         self.assertEqual(utils.mean([]), 0)
 
     def test_mean_within_1_percent_accuracy_for_non_empty_list(self):
+        """
+        Count mean and assert it provides 3-point accuracy.
+        """
         items = [1, 2]
         self.assertAlmostEqual(utils.mean(items), 1.5, 3)
+
+    def test_invalid_data_exception_is_caught(self):
+        """
+        Captures log and checks whether 'Problem with line' message is found.
+        """
+        with testfixtures.LogCapture() as log_capture:
+
+            main.app.config.update({'DATA_CSV': INVALID_FORMAT_TEST_DATA})
+            try:
+                utils.get_data()
+            except UnboundLocalError:
+                pass
+            main.app.config.update({'DATA_CSV': TEST_DATA_CSV})
+            self.assertTrue(any(filter(lambda x: 'Problem with line' in x.msg, log_capture.records)))
+
+    def test_header_and_footer_is_omitted(self):
+        """
+        Works exactly as test_get_data, however, the file it works on contains footers and headers
+        """
+        main.app.config.update({'DATA_CSV': TEST_DATA_WITH_HEADER_AND_FOOTER})
+        self.test_get_data()
+        main.app.config.update({'DATA_CSV': TEST_DATA_CSV})
+
+    def test_group_by_weekday(self):
+        """
+        Enter sample data and check whether group serves it correctly.
+        The data contains one entry set to Sunday (for easier iterating) with one
+        hour interval.
+        """
+        # Sunday with one hour interval
+        data = {
+            datetime.date(2017, 4, 9): {
+                'start': datetime.time(12, 0, 0),
+                'end': datetime.time(13, 0, 0)
+            }
+        }
+
+        weekday_result = utils.group_by_weekday(data)
+        # From Monday to Saturday no data has been entered, so there should be
+        # empty lists
+        for i in range(6):
+            self.assertEqual(len(weekday_result[i]), 0)
+        # Ensure there is one entry for Sunday
+        self.assertEqual(len(weekday_result[6]), 1)
+        # Ensure it contains 1 hour interval
+        self.assertEqual(weekday_result[6][0], 3600)
 
 
 def suite():  # pragma: no cover
