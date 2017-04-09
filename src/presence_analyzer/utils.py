@@ -65,7 +65,6 @@ def get_data():
                 end = datetime.strptime(row[3], '%H:%M:%S').time()
             except (ValueError, TypeError):
                 log.debug('Problem with line %d: ', i, exc_info=True)
-                # logging.debug('Sample msg')
 
             data.setdefault(user_id, {})[date] = {'start': start, 'end': end}
 

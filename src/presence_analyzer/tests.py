@@ -5,10 +5,11 @@ Presence analyzer unit tests.
 from __future__ import unicode_literals
 
 import calendar
-import os.path
-import json
 import datetime
+import json
+import os.path
 import unittest
+
 from mock import patch
 
 from presence_analyzer import main, utils, views
@@ -77,16 +78,16 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         Test json response for user 10.
         """
         response = self.client.get('/api/v1/presence_weekday/10')
-        self.assertEqual(response.status_code, 200)
         data = json.loads(response.data)
 
         weekdays = utils.group_by_weekday(utils.get_data()[10])
         expected_data = [
-                [calendar.day_abbr[weekday], sum(intervals)]
-                for weekday, intervals in enumerate(weekdays)
+            [calendar.day_abbr[weekday], sum(intervals)]
+            for weekday, intervals in enumerate(weekdays)
             ]
         expected_data.insert(0, ['Weekday', 'Presence (s)'])
 
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(expected_data, data)
 
     def test_mean_time_non_existent_id(self):
@@ -94,6 +95,7 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         Test data contains ids: 10 and 11. Giving number 1 should result in 404 exit code.
         """
         response = self.client.get('/api/v1/mean_time_weekday/1')
+
         self.assertEqual(response.status_code, 404)
 
     def test_mean_time_weekday_view(self):
@@ -101,14 +103,15 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         Test json response for user 10.
         """
         response = self.client.get('/api/v1/mean_time_weekday/10')
-        self.assertEqual(response.status_code, 200)
 
         data = json.loads(response.data)
         weekdays = utils.group_by_weekday(utils.get_data()[10])
         expected_data = [
-                [calendar.day_abbr[weekday], utils.mean(intervals)]
-                for weekday, intervals in enumerate(weekdays)
+            [calendar.day_abbr[weekday], utils.mean(intervals)]
+            for weekday, intervals in enumerate(weekdays)
             ]
+
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(expected_data, data)
 
 
@@ -134,9 +137,10 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         Test parsing of CSV file.
         """
         data = utils.get_data()
+        sample_date = datetime.date(2013, 9, 10)
+        
         self.assertIsInstance(data, dict)
         self.assertItemsEqual(data.keys(), [10, 11])
-        sample_date = datetime.date(2013, 9, 10)
         self.assertIn(sample_date, data[10])
         self.assertItemsEqual(data[10][sample_date].keys(), ['start', 'end'])
         self.assertEqual(
@@ -159,24 +163,22 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         """
         self.assertEqual(utils.interval(datetime.time(0, 0, 0), datetime.time(0, 0, 0)), 0)
         self.assertEqual(utils.interval(datetime.time(0, 0, 0), datetime.time(1, 1, 1)), 3661)
+        self.assertEqual(utils.interval(datetime.time(1, 0, 0), datetime.time(0, 0, 0)), -3600)
+        self.assertEqual(utils.interval(datetime.time(0, 0, 0), datetime.time(0, 0, 50)), 50)
 
-    def test_mean_with_empty_list(self):
-        """
-        Mean checks whether provided list is empty and returns 0 if so.
-        """
-        self.assertEqual(utils.mean([]), 0)
-
-    def test_mean_with_non_empty_list(self):
+    def test_mean(self):
         """
         Count mean and assert it provides 3-point accuracy.
         """
+        self.assertEqual(utils.mean([]), 0)
         self.assertAlmostEqual(utils.mean([1, 2]), 1.5, 3)
+        self.assertAlmostEqual(utils.mean([0]), 0.0, 3)
+        self.assertAlmostEqual(utils.mean([1, 2, 3, 4, 5]), 3.0, 3)
 
     @patch('presence_analyzer.utils.log')
     def test_invalid_data_handled(self, mocked_log):
         """
         On introduction of invalid data logger with message 'Problem with line 0' should be called.
-        :param mocked_log: mocked logger.
         """
         main.app.config.update({'DATA_CSV': INVALID_FORMAT_TEST_DATA})
 
@@ -188,8 +190,8 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
 
     def test_header_and_footer_omitted(self):
         """
-        The method get_data() should skip lines with more or less than 4 fields (called footers and headers), so
-        it should behave as normal get_data() on file with footer and header.
+        The method get_data() should skip lines with more or less than 4 fields (called footers and
+        headers), so it should behave as normal get_data() on file with footer and header.
         """
         main.app.config.update({'DATA_CSV': TEST_DATA_WITH_HEADER_AND_FOOTER})
         self.test_get_data()
@@ -207,6 +209,7 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         expected_data = [[], [], [], [], [], [], [3600]]
 
         data = utils.group_by_weekday(data)
+
         self.assertEqual(data, expected_data)
 
 
