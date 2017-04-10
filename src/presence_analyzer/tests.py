@@ -78,8 +78,8 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         Test json response for user 10.
         """
         response = self.client.get('/api/v1/presence_weekday/10')
-        data = json.loads(response.data)
 
+        data = json.loads(response.data)
         weekdays = utils.group_by_weekday(utils.get_data()[10])
         expected_data = [
             [calendar.day_abbr[weekday], sum(intervals)]
@@ -138,7 +138,7 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         """
         data = utils.get_data()
         sample_date = datetime.date(2013, 9, 10)
-        
+
         self.assertIsInstance(data, dict)
         self.assertItemsEqual(data.keys(), [10, 11])
         self.assertIn(sample_date, data[10])
@@ -153,8 +153,8 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         Test time elapsed with different time set. Special case: midnight.
         """
         self.assertEqual(utils.seconds_since_midnight(datetime.time(0, 0, 0)), 0)
-        self.assertEqual(utils.seconds_since_midnight(datetime.time(0, 0, 1)), 1)
         self.assertEqual(utils.seconds_since_midnight(datetime.time(0, 1, 0)), 60)
+        self.assertEqual(utils.seconds_since_midnight(datetime.time(0, 0, 1)), 1)
         self.assertEqual(utils.seconds_since_midnight(datetime.time(1, 0, 0)), 3600)
 
     def test_interval(self):
@@ -162,8 +162,8 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         Test interval is counted correctly for two different and two same points in time.
         """
         self.assertEqual(utils.interval(datetime.time(0, 0, 0), datetime.time(0, 0, 0)), 0)
-        self.assertEqual(utils.interval(datetime.time(0, 0, 0), datetime.time(1, 1, 1)), 3661)
         self.assertEqual(utils.interval(datetime.time(1, 0, 0), datetime.time(0, 0, 0)), -3600)
+        self.assertEqual(utils.interval(datetime.time(0, 0, 0), datetime.time(1, 1, 1)), 3661)
         self.assertEqual(utils.interval(datetime.time(0, 0, 0), datetime.time(0, 0, 50)), 50)
 
     def test_mean(self):
