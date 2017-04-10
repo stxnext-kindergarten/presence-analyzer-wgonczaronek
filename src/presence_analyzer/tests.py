@@ -84,7 +84,7 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         expected_data = [
             [calendar.day_abbr[weekday], sum(intervals)]
             for weekday, intervals in enumerate(weekdays)
-            ]
+        ]
         expected_data.insert(0, ['Weekday', 'Presence (s)'])
 
         self.assertEqual(response.status_code, 200)
@@ -109,7 +109,7 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         expected_data = [
             [calendar.day_abbr[weekday], utils.mean(intervals)]
             for weekday, intervals in enumerate(weekdays)
-            ]
+        ]
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(expected_data, data)
