@@ -102,9 +102,7 @@
                         var result = [];
 
 						$.getJSON("/api/v1/presence_start_end/"+selected_user, function(tmp) {
-                            $.each(tmp, function(index, value) {
-                                console.log("Result: " + result);
-                            });
+                            $.each(tmp, function(index, value) {});
 
                             for(i=0; i < tmp.length; i++){
                                 result.push([tmp[i][0], new Date("1-1-1 " + String(tmp[i][1])), new Date("1-1-1 " + String(tmp[i][2]))]);
