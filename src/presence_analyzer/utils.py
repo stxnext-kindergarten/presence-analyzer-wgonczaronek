@@ -2,11 +2,12 @@
 """
 Helper functions used in views.
 """
-
+from __future__ import unicode_literals
+import calendar
 import csv
 from json import dumps
 from functools import wraps
-from datetime import datetime
+import datetime
 
 from flask import Response
 
@@ -52,7 +53,7 @@ def get_data():
     """
     data = {}
     with open(app.config['DATA_CSV'], 'r') as csvfile:
-        presence_reader = csv.reader(csvfile, delimiter=',')
+        presence_reader = csv.reader(csvfile, delimiter=str(','))
         for i, row in enumerate(presence_reader):
             if len(row) != 4:
                 # ignore header and footer lines
@@ -60,9 +61,9 @@ def get_data():
 
             try:
                 user_id = int(row[0])
-                date = datetime.strptime(row[1], '%Y-%m-%d').date()
-                start = datetime.strptime(row[2], '%H:%M:%S').time()
-                end = datetime.strptime(row[3], '%H:%M:%S').time()
+                date = datetime.datetime.strptime(row[1], '%Y-%m-%d').date()
+                start = datetime.datetime.strptime(row[2], '%H:%M:%S').time()
+                end = datetime.datetime.strptime(row[3], '%H:%M:%S').time()
             except (ValueError, TypeError):
                 log.debug('Problem with line %d: ', i, exc_info=True)
 
@@ -83,11 +84,49 @@ def group_by_weekday(items):
     return result
 
 
+def group_mean_start_end_by_weekday(items):
+    """
+    Groups start and end time by weekdays. Returns a list with consecutive statistics for each
+    weekday in a form of:
+        [ [day of the week, mean start time, mean end time], ... ]
+    The start end end times are returned as datetime.time() objects.
+    """
+    START_POSITION = 1
+    END_POSITION = 2
+    presence_list = []
+    for day in calendar.day_abbr:
+        presence_list.append([day, [], []])
+
+    for date in items:
+        start = seconds_since_midnight(items[date]['start'])
+        end = seconds_since_midnight(items[date]['end'])
+
+        presence_list[date.weekday()][START_POSITION].append(start)
+        presence_list[date.weekday()][END_POSITION].append(end)
+
+    for day in presence_list:
+        day[START_POSITION] = convert_seconds_to_time(int(mean(day[START_POSITION])))
+        day[END_POSITION] = convert_seconds_to_time(int(mean(day[END_POSITION])))
+
+    return presence_list
+
+
 def seconds_since_midnight(time):
     """
     Calculates amount of seconds since midnight.
     """
     return time.hour * 3600 + time.minute * 60 + time.second
+
+
+def convert_seconds_to_time(seconds):
+    """
+    Calculate time of the day based on seconds since midnight.
+    """
+    hour = seconds//3600
+    seconds %= 3600
+    minute = seconds // 60
+    seconds %= 60
+    return datetime.time(hour=hour, minute=minute, second=seconds)
 
 
 def interval(start, end):

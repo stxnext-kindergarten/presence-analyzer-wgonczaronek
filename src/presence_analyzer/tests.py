@@ -2,16 +2,28 @@
 """
 Presence analyzer unit tests.
 """
-import os.path
-import json
+from __future__ import unicode_literals
+
+import calendar
 import datetime
+import json
+import os.path
 import unittest
 
-from presence_analyzer import main, views, utils
+from mock import patch
 
+from presence_analyzer import main, utils, views
 
 TEST_DATA_CSV = os.path.join(
     os.path.dirname(__file__), '..', '..', 'runtime', 'data', 'test_data.csv'
+)
+
+TEST_DATA_WITH_HEADER_AND_FOOTER = os.path.join(
+    os.path.dirname(__file__), '..', '..', 'runtime', 'data', 'test_data_with_header_and_footer.csv'
+)
+
+INVALID_FORMAT_TEST_DATA = os.path.join(
+    os.path.dirname(__file__), '..', '..', 'runtime', 'data', 'invalid_format_test_data.csv'
 )
 
 
@@ -48,10 +60,82 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         """
         resp = self.client.get('/api/v1/users')
         self.assertEqual(resp.status_code, 200)
+
         self.assertEqual(resp.content_type, 'application/json')
         data = json.loads(resp.data)
         self.assertEqual(len(data), 2)
         self.assertDictEqual(data[0], {u'user_id': 10, u'name': u'User 10'})
+
+    def test_presence_weekday_non_existent_id(self):
+        """
+        Test data contains ids: 10 and 11. Giving number 1 should result in 404 exit code.
+        """
+        response = self.client.get('/api/v1/presence_weekday/1')
+        self.assertEqual(response.status_code, 404)
+
+    def test_presence_weekday_view(self):
+        """
+        Test json response for user 10.
+        """
+        response = self.client.get('/api/v1/presence_weekday/10')
+
+        data = json.loads(response.data)
+        weekdays = utils.group_by_weekday(utils.get_data()[10])
+        expected_data = [
+            [calendar.day_abbr[weekday], sum(intervals)]
+            for weekday, intervals in enumerate(weekdays)
+        ]
+        expected_data.insert(0, ['Weekday', 'Presence (s)'])
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(expected_data, data)
+
+    def test_mean_time_non_existent_id(self):
+        """
+        Test data contains ids: 10 and 11. Giving number 1 should result in 404 exit code.
+        """
+        response = self.client.get('/api/v1/mean_time_weekday/1')
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_mean_time_weekday_view(self):
+        """
+        Test json response for user 10.
+        """
+        response = self.client.get('/api/v1/mean_time_weekday/10')
+
+        data = json.loads(response.data)
+        weekdays = utils.group_by_weekday(utils.get_data()[10])
+        expected_data = [
+            [calendar.day_abbr[weekday], utils.mean(intervals)]
+            for weekday, intervals in enumerate(weekdays)
+        ]
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(expected_data, data)
+
+    def test_start_end_view(self):
+        """
+        Test json response we get for user 10.
+        """
+        expected_data = utils.group_mean_start_end_by_weekday(utils.get_data()[10])
+        for day in expected_data:
+            day[1] = day[1].strftime('%H:%M:%S')
+            day[2] = day[2].strftime('%H:%M:%S')
+
+        response = self.client.get('/api/v1/presence_start_end/10')
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(expected_data, data)
+
+    def test_start_end_view_for_non_existent_user(self):
+        """
+        Check response for user with id 1 not mentioned in test_data.csv is 404
+        """
+        response = self.client.get('/api/v1/presence_start_end/1')
+
+        self.assertEqual(response.status_code, 404)
 
 
 class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
@@ -76,9 +160,10 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         Test parsing of CSV file.
         """
         data = utils.get_data()
+        sample_date = datetime.date(2013, 9, 10)
+
         self.assertIsInstance(data, dict)
         self.assertItemsEqual(data.keys(), [10, 11])
-        sample_date = datetime.date(2013, 9, 10)
         self.assertIn(sample_date, data[10])
         self.assertItemsEqual(data[10][sample_date].keys(), ['start', 'end'])
         self.assertEqual(
@@ -86,8 +171,110 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
             datetime.time(9, 39, 5)
         )
 
+    def test_seconds_since_midnight(self):
+        """
+        Test time elapsed with different time set. Special case: midnight.
+        """
+        self.assertEqual(utils.seconds_since_midnight(datetime.time(0, 0, 0)), 0)
+        self.assertEqual(utils.seconds_since_midnight(datetime.time(0, 1, 0)), 60)
+        self.assertEqual(utils.seconds_since_midnight(datetime.time(0, 0, 1)), 1)
+        self.assertEqual(utils.seconds_since_midnight(datetime.time(1, 0, 0)), 3600)
 
-def suite():
+    def test_interval(self):
+        """
+        Test interval is counted correctly for two different and two same points in time.
+        """
+        self.assertEqual(utils.interval(datetime.time(0, 0, 0), datetime.time(0, 0, 0)), 0)
+        self.assertEqual(utils.interval(datetime.time(1, 0, 0), datetime.time(0, 0, 0)), -3600)
+        self.assertEqual(utils.interval(datetime.time(0, 0, 0), datetime.time(1, 1, 1)), 3661)
+        self.assertEqual(utils.interval(datetime.time(0, 0, 0), datetime.time(0, 0, 50)), 50)
+
+    def test_mean(self):
+        """
+        Count mean and assert it provides 3-point accuracy.
+        """
+        self.assertEqual(utils.mean([]), 0)
+        self.assertAlmostEqual(utils.mean([1, 2]), 1.5, 3)
+        self.assertAlmostEqual(utils.mean([0]), 0.0, 3)
+        self.assertAlmostEqual(utils.mean([1, 2, 3, 4, 5]), 3.0, 3)
+
+    @patch('presence_analyzer.utils.log')
+    def test_invalid_data_handled(self, mocked_log):
+        """
+        On introduction of invalid data logger with message 'Problem with line 0' should be called.
+        """
+        main.app.config.update({'DATA_CSV': INVALID_FORMAT_TEST_DATA})
+
+        with self.assertRaises(UnboundLocalError):
+            utils.get_data()
+
+        self.assertEqual(mocked_log.debug.call_count, 1)
+        self.assertEqual(mocked_log.debug.call_args[0], ('Problem with line %d: ', 0))
+
+    def test_header_and_footer_omitted(self):
+        """
+        The method get_data() should skip lines with more or less than 4 fields (called footers and
+        headers), so it should behave as normal get_data() on file with footer and header.
+        """
+        main.app.config.update({'DATA_CSV': TEST_DATA_WITH_HEADER_AND_FOOTER})
+        self.test_get_data()
+
+    def test_group_by_weekday(self):
+        """
+        Enter sample data and check whether group serves it correctly.
+        """
+        data = {
+            datetime.date(2017, 4, 9): {
+                'start': datetime.time(12, 0, 0),
+                'end': datetime.time(13, 0, 0)
+            }
+        }
+        expected_data = [[], [], [], [], [], [], [3600]]
+
+        data = utils.group_by_weekday(data)
+
+        self.assertEqual(data, expected_data)
+
+    def test_seconds_to_time(self):
+        """
+        Tests seconds_to_time returns correct time.
+        """
+        self.assertEqual(utils.convert_seconds_to_time(0), datetime.time(0, 0, 0))
+        self.assertEqual(utils.convert_seconds_to_time(1), datetime.time(0, 0, 1))
+        self.assertEqual(utils.convert_seconds_to_time(70), datetime.time(0, 1, 10))
+        self.assertEqual(utils.convert_seconds_to_time(7210), datetime.time(2, 0, 10))
+
+    def test_group_start_end_by_weekday(self):
+        """
+        Test if group by weekday returns expected averages.
+        """
+        test_data = {
+            datetime.date(2017, 4, 3): {
+                'start': datetime.time(7, 0, 0),
+                'end': datetime.time(17, 0, 0)
+            },
+
+            datetime.date(2017, 4, 10): {
+                'start': datetime.time(7, 30, 0),
+                'end': datetime.time(17, 30, 0)
+            },
+
+            datetime.date(2017, 4, 17): {
+                'start': datetime.time(8, 00, 0),
+                'end': datetime.time(18, 00, 0)
+            }
+        }
+        expected_data = [[day, datetime.time(0, 0, 0), datetime.time(0, 0, 0)]
+                         for day in calendar.day_abbr]
+        expected_data[0][1] = datetime.time(7, 30, 0)
+        expected_data[0][2] = datetime.time(17, 30, 0)
+
+        data = utils.group_mean_start_end_by_weekday(test_data)
+
+        self.assertEqual(data, expected_data)
+
+
+def suite():  # pragma: no cover
     """
     Default test suite.
     """
@@ -97,5 +284,5 @@ def suite():
     return base_suite
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     unittest.main()
