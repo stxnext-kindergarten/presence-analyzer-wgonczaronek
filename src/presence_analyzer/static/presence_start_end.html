@@ -90,6 +90,7 @@
                     dropdown.show();
                     loading.hide();
                 });
+
                 $('#user_id').change(function(){
                     var selected_user = $("#user_id").val();
                     var chart_div = $('#chart_div');
@@ -97,32 +98,37 @@
                         loading.show();
                         chart_div.hide();
                         
-                        // some dummy data, this should go from API
-                        var result = [
-                            ["Mon", new Date(1, 1, 1, 7, 37, 38), new Date(1, 1, 1, 15, 07, 14)],
-                            ["Tue", new Date(1, 1, 1, 8, 16, 23), new Date(1, 1, 1, 14, 01, 47)],
-                            ["Wed", new Date(1, 1, 1, 7, 00, 06), new Date(1, 1, 1, 13, 24, 12)],
-                            ["Thu", new Date(1, 1, 1, 7, 26, 32), new Date(1, 1, 1, 12, 40, 45)],
-                            ["Fri", new Date(1, 1, 1, 6, 53, 22), new Date(1, 1, 1, 12, 52, 09)]
-                        ] 
+                        var tmp = [];
+                        var result = [];
 
-                        var data = new google.visualization.DataTable();
-                        data.addColumn('string', 'Weekday');
-                        data.addColumn({ type: 'datetime', id: 'Start' });
-                        data.addColumn({ type: 'datetime', id: 'End' });
-                        data.addRows(result);
-                        var options = {
-                            hAxis: {title: 'Weekday'}
-                        };
-                        var formatter = new google.visualization.DateFormat({pattern: 'HH:mm:ss'});
-                        formatter.format(data, 1);
-                        formatter.format(data, 2);
+						$.getJSON("/api/v1/presence_start_end/"+selected_user, function(tmp) {
+                            $.each(tmp, function(index, value) {
+                                console.log("tmp: " + tmp);
+                                console.log("Result: " + result);
+                            });
 
-                        chart_div.show();
-                        loading.hide();
-                        var chart = new google.visualization.Timeline(chart_div[0]);
-                        chart.draw(data, options);
+                            for(i=0; i < tmp.length; i++){
+                                result.push([tmp[i][0], new Date("1-1-1 " + String(tmp[i][1])), new Date("1-1-1 " + String(tmp[i][2]))]);
+                            }
 
+                            var data = new google.visualization.DataTable();
+                            data.addColumn('string', 'Weekday');
+                            data.addColumn({ type: 'datetime', id: 'Start' });
+                            data.addColumn({ type: 'datetime', id: 'End' });
+                            data.addRows(result);
+                            var options = {
+                                hAxis: {title: 'Weekday'}
+                            };
+
+                            var formatter = new google.visualization.DateFormat({pattern: 'HH:mm:ss'});
+                            formatter.format(data, 1);
+                            formatter.format(data, 2);
+
+                            chart_div.show();
+                            loading.hide();
+                            var chart = new google.visualization.Timeline(chart_div[0]);
+                            chart.draw(data, options);
+                        });
                     }
                 });
             });
