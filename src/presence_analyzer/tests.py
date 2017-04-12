@@ -114,6 +114,29 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(expected_data, data)
 
+    def test_start_end_view(self):
+        """
+        Test json response we get for user 10.
+        """
+        expected_data = utils.group_mean_start_end_by_weekday(utils.get_data()[10])
+        for day, value in expected_data.items():
+            value['start'] = value['start'].strftime('%H:%M:%S')
+            value['end'] = value['end'].strftime('%H:%M:%S')
+
+        response = self.client.get('/api/v1/presence_start_end/10')
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(expected_data, data)
+
+    def test_start_end_view_for_non_existent_user(self):
+        """
+        Check response for user with id 1 not mentioned in test_data.csv is 404
+        """
+        response = self.client.get('/api/v1/presence_start_end/1')
+
+        self.assertEqual(response.status_code, 404)
+
 
 class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
     """
@@ -209,6 +232,49 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         expected_data = [[], [], [], [], [], [], [3600]]
 
         data = utils.group_by_weekday(data)
+
+        self.assertEqual(data, expected_data)
+
+    def test_seconds_to_time(self):
+        """
+        Tests seconds_to_time returns correct time.
+        """
+        self.assertEqual(utils.convert_seconds_to_time(0), datetime.time(0, 0, 0))
+        self.assertEqual(utils.convert_seconds_to_time(1), datetime.time(0, 0, 1))
+        self.assertEqual(utils.convert_seconds_to_time(70), datetime.time(0, 1, 10))
+        self.assertEqual(utils.convert_seconds_to_time(7210), datetime.time(2, 0, 10))
+
+    def test_group_start_end_by_weekday(self):
+        """
+        Test if group by weekday returns expected averages.
+        """
+        test_data = {
+            datetime.date(2017, 4, 3): {
+                'start': datetime.time(7, 0, 0),
+                'end': datetime.time(17, 0, 0)
+            },
+
+            datetime.date(2017, 4, 10): {
+                'start': datetime.time(7, 30, 0),
+                'end': datetime.time(17, 30, 0)
+            },
+
+            datetime.date(2017, 4, 17): {
+                'start': datetime.time(8, 00, 0),
+                'end': datetime.time(18, 00, 0)
+            }
+        }
+        expected_data = {
+            day: {
+                'start': datetime.time(0, 0, 0),
+                'end': datetime.time(0, 0, 0)
+            }
+            for day in calendar.day_abbr
+        }
+        expected_data['Mon']['start'] = datetime.time(7, 30, 0)
+        expected_data['Mon']['end'] = datetime.time(17, 30, 0)
+
+        data = utils.group_mean_start_end_by_weekday(test_data)
 
         self.assertEqual(data, expected_data)
 
