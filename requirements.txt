@@ -1,5 +1,0 @@
-pytest-pep8
-coverage
-flask
-testfixtures
-mock
