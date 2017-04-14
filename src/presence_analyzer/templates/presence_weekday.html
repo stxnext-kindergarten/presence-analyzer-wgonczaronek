@@ -1,0 +1,12 @@
+{% extends 'main.html' %}
+
+{% block additional_scripts %}
+    <script type="text/javascript">
+        google.load("visualization", "1", {packages:["corechart", "timeline"], 'language': 'pl'});
+    </script>
+    <script src="/static/js/presence_weekday.js"></script>
+{% endblock additional_scripts %}
+
+{% block content_heading %}
+    Presence by weekday
+{% endblock content_heading %}

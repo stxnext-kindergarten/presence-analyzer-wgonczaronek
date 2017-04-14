@@ -4,7 +4,8 @@ Defines views.
 """
 
 import calendar
-from flask import redirect, abort
+from flask import redirect, abort, render_template
+from flask.helpers import url_for
 
 from presence_analyzer.main import app
 from presence_analyzer.utils import (
@@ -18,13 +19,31 @@ from presence_analyzer.utils import (
 import logging
 log = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
+templates = {
+    'mean_time_weekday': {
+        'name': 'mean_time_weekday',
+        'description': 'Presence mean time',
+        'template': 'mean_time_weekday.html'
+    },
+    'presence_weekday': {
+        'name': 'presence_weekday',
+        'description': 'Presence by weekday',
+        'template': 'presence_weekday.html'
+    },
+    'presence_start_end': {
+        'name': 'presence_start_end',
+        'description': 'Presence start-end',
+        'template': 'presence_start_end.html'
+    }
+}
+
 
 @app.route('/')
 def mainpage():
     """
     Redirects to front page.
     """
-    return redirect('/static/presence_weekday.html')
+    return redirect(url_for('statistics_view', chosen='presence_start_end'))
 
 
 @app.route('/api/v1/users', methods=['GET'])
@@ -42,7 +61,7 @@ def users_view():
 
 @app.route('/api/v1/mean_time_weekday/<int:user_id>', methods=['GET'])
 @jsonify
-def mean_time_weekday_view(user_id):
+def mean_time_weekday_api_view(user_id):
     """
     Returns mean presence time of given user grouped by weekday.
     """
@@ -62,7 +81,7 @@ def mean_time_weekday_view(user_id):
 
 @app.route('/api/v1/presence_weekday/<int:user_id>', methods=['GET'])
 @jsonify
-def presence_weekday_view(user_id):
+def presence_weekday_api_view(user_id):
     """
     Returns total presence time of given user grouped by weekday.
     """
@@ -83,7 +102,7 @@ def presence_weekday_view(user_id):
 
 @app.route('/api/v1/presence_start_end/<int:user_id>', methods=['GET'])
 @jsonify
-def presence_start_end_view(user_id):
+def presence_start_end_api_view(user_id):
     """
     Return json response for mean time user with given id has come to and from work.
     """
@@ -99,3 +118,11 @@ def presence_start_end_view(user_id):
         value['end'] = value['end'].strftime('%H:%M:%S')
 
     return weekdays
+
+
+@app.route('/statistics/<chosen>/')
+def statistics_view(chosen):
+    try:
+        return render_template(templates[chosen]['template'], templates=templates)
+    except KeyError:
+        abort(404)
