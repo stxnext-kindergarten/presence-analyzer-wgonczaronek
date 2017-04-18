@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang=en>
+
+<head>
+    {% block head %}
+        <meta charset=utf-8>
+        <title>Presence analyzer</title>
+        <meta name="keywords" content="" />
+        <meta name="description" content=""/>
+        <meta name="author" content="STX Next sp. z o.o."/>
+        <meta name="viewport" content="width=device-width; initial-scale=1.0">
+
+        <link href="/static/css/normalize.css" media="all" rel="stylesheet" type="text/css" />
+        <link href="/static/css/basic.css" media="all" rel="stylesheet" type="text/css"/>
+
+        <script src="/static/js/jquery.min.js"></script>
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    {% endblock head %}
+
+    {% block additional_scripts %}
+    {% endblock additional_scripts %}
+</head>
+<body>
+
+</body>
+    <div id="main">
+        <div id="header">
+            <h1>Presence analyzer</h1>
+            <ul>
+                {% for key, template in templates.items() %}
+                    <li {% if request.path == '/statistics/{}/'.format(template['name']) %}id="selected"{% endif %}>
+                        <a href="{{ url_for('statistics_view', chosen=template['name']) }}">{{ template['description'] }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div id="content">
+            <h2>
+                {% block content_heading %}
+                {% endblock content_heading %}
+            </h2>
+            <p>
+                <select id="user_id" style="display: none">
+                    <option value="">--</option>
+                </select>
+                <div id="chart_div" style="display: none">
+                </div>
+                <div id="loading">
+                    <img src="/static/img/loading.gif" />
+                </div>
+            </p>
+        </div>
+    </div>
+</html>
