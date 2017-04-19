@@ -4,10 +4,12 @@ Defines views.
 """
 
 import calendar
-from flask import redirect, abort, render_template
-from flask.helpers import url_for
 
-from presence_analyzer.main import app
+from flask import redirect, abort
+from flask.helpers import url_for
+from flask_mako import render_template
+
+from presence_analyzer.main import app, LOOKUP
 from presence_analyzer.utils import (
     jsonify,
     get_data,
@@ -43,7 +45,7 @@ def mainpage():
     """
     Redirects to front page.
     """
-    return redirect(url_for('statistics_view', chosen='presence_start_end'))
+    return redirect(url_for('statistics_view', chosen='presence_weekday'))
 
 
 @app.route('/api/v1/users', methods=['GET'])
