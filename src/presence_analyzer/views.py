@@ -9,7 +9,7 @@ from flask import redirect, abort
 from flask.helpers import url_for
 from flask_mako import render_template
 
-from presence_analyzer.main import app, LOOKUP
+from presence_analyzer.main import app
 from presence_analyzer.utils import (
     jsonify,
     get_data,
