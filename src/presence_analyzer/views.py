@@ -9,13 +9,14 @@ from flask import redirect, abort
 from flask.helpers import url_for
 from flask_mako import render_template
 
-from presence_analyzer.main import app
+from .main import app
 from presence_analyzer.utils import (
     jsonify,
     get_data,
     mean,
     group_by_weekday,
-    group_mean_start_end_by_weekday
+    group_mean_start_end_by_weekday,
+    get_user_data
 )
 
 import logging
@@ -52,13 +53,27 @@ def mainpage():
 @jsonify
 def users_view():
     """
-    Users listing for dropdown.
+    Users listing for dropdown consisting of user_id, name and image url. If user data can be found
+    in USERS_XML_FILE, user's actual name is used and image_url is added. Otherwise, id is used and
+    avatar_url is set to null.
     """
     data = get_data()
-    return [
-        {'user_id': i, 'name': 'User {0}'.format(str(i))}
-        for i in data.keys()
-    ]
+    users_data = get_user_data()
+
+    result = []
+
+    for i in data.keys():
+        try:
+            result.append({
+                'user_id': i,
+                'name': users_data[i]['name'],
+            })
+        except KeyError:
+            result.append({
+                'user_id': i,
+                'name': 'User {}'.format(str(i)),
+            })
+    return result
 
 
 @app.route('/api/v1/mean_time_weekday/<int:user_id>', methods=['GET'])
@@ -120,6 +135,19 @@ def presence_start_end_api_view(user_id):
         value['end'] = value['end'].strftime('%H:%M:%S')
 
     return weekdays
+
+
+@app.route('/api/v1/user_avatar_url/<user_id>', methods=['GET'])
+@jsonify
+def get_user_avatar_url(user_id):
+    """
+    Fetches avatar url from USERS_XML_FILE for given user. 404 if its not found.
+    """
+    user_data = get_user_data()
+    try:
+        return user_data[int(user_id)]['avatar_url']
+    except KeyError:
+        abort(404)
 
 
 @app.route('/statistics/<chosen>/')

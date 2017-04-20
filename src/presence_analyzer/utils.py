@@ -7,9 +7,10 @@ from __future__ import unicode_literals
 import calendar
 import csv
 import logging
+import datetime
 from json import dumps
 from functools import wraps
-import datetime
+from lxml import etree
 
 from flask import Response
 
@@ -146,3 +147,29 @@ def mean(items):
     Calculates arithmetic mean. Returns zero for empty lists.
     """
     return float(sum(items)) / len(items) if len(items) > 0 else 0
+
+
+def get_user_data():
+    """
+    Extracts user data from .tree files. Returns dictionary in following format:
+        {
+            <id>: {
+                'name': <name>
+                'avatar': <avatar_url>
+            },
+        }
+    """
+    result = {}
+
+    tree = etree.parse(app.config['USERS_XML_FILE'])
+    user_ids = tree.xpath('/intranet/users/user')
+    user_names = tree.xpath('/intranet/users/user/name/text()')
+    user_avatars = tree.xpath('/intranet/users/user/avatar/text()')
+
+    for uid, name, avatar in zip(user_ids, user_names, user_avatars):
+        result[int(uid.attrib['id'])] = {
+            'name': name,
+            'avatar_url': avatar
+        }
+
+    return result
