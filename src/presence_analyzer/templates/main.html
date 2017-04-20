@@ -1,24 +1,22 @@
 <!doctype html>
+
 <html lang=en>
 
 <head>
-    {% block head %}
-        <meta charset=utf-8>
-        <title>Presence analyzer</title>
-        <meta name="keywords" content="" />
-        <meta name="description" content=""/>
-        <meta name="author" content="STX Next sp. z o.o."/>
-        <meta name="viewport" content="width=device-width; initial-scale=1.0">
+    <meta charset=utf-8>
+    <title>Presence analyzer</title>
+    <meta name="keywords" content="" />
+    <meta name="description" content=""/>
+    <meta name="author" content="STX Next sp. z o.o."/>
+    <meta name="viewport" content="width=device-width; initial-scale=1.0">
 
-        <link href="/static/css/normalize.css" media="all" rel="stylesheet" type="text/css" />
-        <link href="/static/css/basic.css" media="all" rel="stylesheet" type="text/css"/>
+    <link href="${url_for('static', filename='css/normalize.css')}" media="all" rel="stylesheet" type="text/css" />
+    <link href="${url_for('static', filename='css/basic.css')}" media="all" rel="stylesheet" type="text/css"/>
 
-        <script src="/static/js/jquery.min.js"></script>
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    {% endblock head %}
+    <script src="${url_for('static', filename='js/jquery.min.js')}"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
-    {% block additional_scripts %}
-    {% endblock additional_scripts %}
+    <%block name="additional_scripts"/>
 </head>
 <body>
 
@@ -27,17 +25,20 @@
         <div id="header">
             <h1>Presence analyzer</h1>
             <ul>
-                {% for key, template in templates.items() %}
-                    <li {% if request.path == '/statistics/{}/'.format(template['name']) %}id="selected"{% endif %}>
-                        <a href="{{ url_for('statistics_view', chosen=template['name']) }}">{{ template['description'] }}</a>
+                % for key, template in templates.items():
+                    <li
+                        % if request.path == '/statistics/{}/'.format(template['name']):
+                            id="selected"
+                        % endif
+                    >
+                        <a href="${url_for('statistics_view', chosen=template['name'])}">${template['description']}</a>
                     </li>
-                {% endfor %}
+                % endfor
             </ul>
         </div>
         <div id="content">
             <h2>
-                {% block content_heading %}
-                {% endblock content_heading %}
+                <%block name='content_heading'/>
             </h2>
             <p>
                 <select id="user_id" style="display: none">
@@ -46,7 +47,7 @@
                 <div id="chart_div" style="display: none">
                 </div>
                 <div id="loading">
-                    <img src="/static/img/loading.gif" />
+                    <img src="${url_for('static', filename='img/loading.gif')}" />
                 </div>
             </p>
         </div>

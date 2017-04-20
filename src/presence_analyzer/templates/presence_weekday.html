@@ -1,12 +1,12 @@
-{% extends 'main.html' %}
+<%inherit file="main.html"/>
 
-{% block additional_scripts %}
+<%block name="additional_scripts">
     <script type="text/javascript">
         google.load("visualization", "1", {packages:["corechart", "timeline"], 'language': 'pl'});
     </script>
-    <script src="/static/js/presence_weekday.js"></script>
-{% endblock additional_scripts %}
+    <script src="${url_for('static', filename='js/presence_weekday.js')}"></script>
+</%block>
 
-{% block content_heading %}
+<%block name='content_heading'>
     Presence by weekday
-{% endblock content_heading %}
+</%block>

@@ -27,7 +27,9 @@ setup(
     install_requires=[
         'setuptools',
         'Flask',
-        'mock'
+        'Flask-Mako',
+        'mock',
+        'mako'
     ],
     entry_points="""
     [console_scripts]

@@ -6,6 +6,7 @@ from __future__ import unicode_literals
 
 import calendar
 import csv
+import logging
 from json import dumps
 from functools import wraps
 import datetime
@@ -14,7 +15,6 @@ from flask import Response
 
 from presence_analyzer.main import app
 
-import logging
 log = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
 
