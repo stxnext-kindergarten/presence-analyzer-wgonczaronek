@@ -4,12 +4,12 @@ Defines views.
 """
 
 import calendar
+import logging
 
 from flask import redirect, abort
 from flask.helpers import url_for
 from flask_mako import render_template
 
-from .main import app
 from presence_analyzer.utils import (
     jsonify,
     get_data,
@@ -18,11 +18,11 @@ from presence_analyzer.utils import (
     group_mean_start_end_by_weekday,
     get_user_data
 )
+from .main import app
 
-import logging
 log = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
-templates = {
+TEMPLATES = {
     'mean_time_weekday': {
         'name': 'mean_time_weekday',
         'description': 'Presence mean time',
@@ -152,7 +152,10 @@ def get_user_avatar_url(user_id):
 
 @app.route('/statistics/<chosen>/')
 def statistics_view(chosen):
+    """
+    Renders requested statistics page.
+    """
     try:
-        return render_template(templates[chosen]['template'], templates=templates)
+        return render_template(TEMPLATES[chosen]['template'], templates=TEMPLATES)
     except KeyError:
         abort(404)
