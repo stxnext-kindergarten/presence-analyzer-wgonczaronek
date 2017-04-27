@@ -41,3 +41,6 @@ nosetests.xml
 
 # Pep-8 tests
 .cache
+
+# File downloaded from internet, no need to store it.
+users.xml

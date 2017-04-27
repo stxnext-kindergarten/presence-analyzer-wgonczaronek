@@ -8,12 +8,13 @@
     <meta name="keywords" content="" />
     <meta name="description" content=""/>
     <meta name="author" content="STX Next sp. z o.o."/>
-    <meta name="viewport" content="width=device-width; initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link href="${url_for('static', filename='css/normalize.css')}" media="all" rel="stylesheet" type="text/css" />
     <link href="${url_for('static', filename='css/basic.css')}" media="all" rel="stylesheet" type="text/css"/>
 
     <script src="${url_for('static', filename='js/jquery.min.js')}"></script>
+    <script src="${url_for('static', filename='js/get_avatar.js')}"></script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
     <%block name="additional_scripts"/>
@@ -44,6 +45,7 @@
                 <select id="user_id" style="display: none">
                     <option value="">--</option>
                 </select>
+                <img id="user_avatar" src="">
                 <div id="chart_div" style="display: none">
                 </div>
                 <div id="loading">

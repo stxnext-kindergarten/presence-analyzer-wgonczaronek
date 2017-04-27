@@ -11,19 +11,27 @@ import os.path
 import unittest
 
 from mock import patch
+from mock.mock import Mock
 
 from presence_analyzer import main, utils, views
+from presence_analyzer.cronjobs import download_xml
 
 TEST_DATA_CSV = os.path.join(
-    os.path.dirname(__file__), '..', '..', 'runtime', 'data', 'test_data.csv'
+    os.path.dirname(__file__), '..', '..', 'runtime', 'data', 'test_data', 'test_data.csv'
 )
 
 TEST_DATA_WITH_HEADER_AND_FOOTER = os.path.join(
-    os.path.dirname(__file__), '..', '..', 'runtime', 'data', 'test_data_with_header_and_footer.csv'
+    os.path.dirname(__file__), '..', '..', 'runtime', 'data', 'test_data',
+    'test_data_with_header_and_footer.csv'
 )
 
 INVALID_FORMAT_TEST_DATA = os.path.join(
-    os.path.dirname(__file__), '..', '..', 'runtime', 'data', 'invalid_format_test_data.csv'
+    os.path.dirname(__file__), '..', '..', 'runtime', 'data', 'test_data',
+    'invalid_format_test_data.csv'
+)
+
+TEST_USERS_XML_FILE = os.path.join(
+    os.path.dirname(__file__), '..', '..', 'runtime', 'data', 'test_data', 'test_users.xml'
 )
 
 
@@ -64,7 +72,8 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         self.assertEqual(resp.content_type, 'application/json')
         data = json.loads(resp.data)
         self.assertEqual(len(data), 2)
-        self.assertDictEqual(data[0], {u'user_id': 10, u'name': u'User 10'})
+        self.assertDictEqual(data[0], {u'user_id': 10, u'name': u'Maciej Z.'})
+        self.assertDictEqual(data[1], {u'user_id': 11, u'name': u'User 11'})
 
     def test_presence_weekday_non_existent_id(self):
         """
@@ -135,6 +144,23 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         """
         response = self.client.get('/api/v1/presence_start_end/1')
 
+        self.assertEqual(response.status_code, 404)
+
+    def test_get_user_avatar_url(self):
+        """
+        Check url given for user 10.
+        """
+        response = self.client.get('/api/v1/user_avatar_url/10')
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data, '/api/images/users/10')
+
+    def test_get_user_avatar_url_for_non_existent_user(self):
+        """
+        Request for non-existent user with ID 1 should return 404 code.
+        """
+        response = self.client.get('/api/v1/user_avatar_url/1')
         self.assertEqual(response.status_code, 404)
 
 
@@ -278,6 +304,79 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
 
         self.assertEqual(data, expected_data)
 
+    def test_get_user_data(self):
+        """
+        Test get_user_data_method() extracts users from test_users.xml file.
+        """
+        expected_result = {
+            10: {
+                'avatar_url': '/api/images/users/10',
+                'name': 'Maciej Z.'
+            },
+            12: {
+                'avatar_url': '/api/images/users/12',
+                'name': 'Patryk G.'
+            }
+        }
+
+        result = utils.get_user_data()
+
+        self.assertEqual(expected_result, result)
+
+
+# We assume urllib is working fine, so we only mock the response in every call.
+class PresenceAnalyzerCronJobTestCase(unittest.TestCase):
+    """
+    Test buildout crontabs.
+    """
+    def setUp(self):
+        with open(TEST_USERS_XML_FILE) as f:
+            self.user_file_contents = f.read()
+        self.mocked_urllib_read = Mock(
+            read=Mock(return_value=self.user_file_contents)
+        )
+
+    @patch('presence_analyzer.cronjobs.download_xml.os')
+    @patch('presence_analyzer.cronjobs.download_xml.logger')
+    @patch('presence_analyzer.cronjobs.download_xml.urllib.urlopen')
+    def test_finds_existing_downloads(self, mocked_urlopen, mocked_logger, mocked_os):
+        """
+        download_xml() function should detect existing user xml files and log info about it.
+        """
+        mocked_urlopen.return_value = self.mocked_urllib_read
+        download_xml.run_debug()
+
+        self.assertEqual(mocked_logger.info.call_count, 1)
+        self.assertEqual(mocked_logger.info.call_args[0], ('Found existing data file. Removing.',))
+        mocked_os.remove.assert_called_with(os.path.normpath(TEST_USERS_XML_FILE))
+
+    @patch('presence_analyzer.cronjobs.download_xml.os')
+    @patch('presence_analyzer.cronjobs.download_xml.logger')
+    @patch('presence_analyzer.cronjobs.download_xml.urllib.urlopen')
+    def test_data_gets_saved(self, mocked_urlopen, mocked_logger, mocked_os):
+        """
+        Mocked data is "downloaded" from MockUrlLib, which returns the same contents as stored
+        in test_users.xml. After download data should be stored in USERS_XML_FILE.
+        """
+        mocked_urlopen.return_value = self.mocked_urllib_read
+
+        download_xml.run_debug()
+
+        self.assertTrue(os.path.exists(main.app.config['USERS_XML_FILE']))
+        self.assertEqual(self.user_file_contents, self.user_file_contents)
+
+
+class PresenceAnalyzerCronJobTestCase(unittest.TestCase):
+    """
+    Test buildout crontabs
+    """
+    # def setUp(self):
+    #     cron_file = main.app.config.update({'USERS_XML': TEST_USERS_XML})
+
+    def test_downloads_file(self):
+        output = download_xml.run()
+        self.assertIsNotNone(output)
+
 
 def suite():  # pragma: no cover
     """
@@ -286,6 +385,7 @@ def suite():  # pragma: no cover
     base_suite = unittest.TestSuite()
     base_suite.addTest(unittest.makeSuite(PresenceAnalyzerViewsTestCase))
     base_suite.addTest(unittest.makeSuite(PresenceAnalyzerUtilsTestCase))
+    base_suite.addTest(unittest.makeSuite(PresenceAnalyzerCronJobTestCase))
     return base_suite
 
 
