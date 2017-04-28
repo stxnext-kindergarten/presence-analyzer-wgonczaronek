@@ -8,8 +8,14 @@ import calendar
 import csv
 import logging
 import datetime
+import time
+import hashlib
 from json import dumps
 from functools import wraps
+from threading import RLock
+from functools import wraps
+
+import pickle
 from lxml import etree
 
 from flask import Response
@@ -17,6 +23,8 @@ from flask import Response
 from presence_analyzer.main import app
 
 log = logging.getLogger(__name__)  # pylint: disable=invalid-name
+_LOCK = RLock()
+_storage = {}
 
 
 def jsonify(function):
@@ -35,6 +43,42 @@ def jsonify(function):
     return inner
 
 
+def get_key_hash(function_name, *args, **kwargs):
+    """
+    Count hash to be used as key in _storage.
+    """
+    pickled = pickle.dumps((function_name, args, kwargs))
+    return hashlib.sha1(pickled).hexdigest()
+
+
+def cache(ttl=600):
+    """
+    Stores result of get_data() function in cache.
+    :param ttl: time to live of cached result in seconds.
+    """
+    def _cache(_function):
+        def ttl_is_over(creation_timestamp):
+            return creation_timestamp + ttl < time.time()
+
+        @wraps(_function)
+        def __cache(*args, **kwargs):
+            with _LOCK:
+                key = get_key_hash(_function.__name__, *args, **kwargs)
+                if key in _storage and not ttl_is_over(_storage[key]['created']):
+                    result = _storage[key]['result']
+                else:
+                    result = _function()
+                    _storage[key] = {
+                        'result': result,
+                        'created': time.time()
+                    }
+
+            return result
+        return __cache
+    return _cache
+
+
+@cache()
 def get_data():
     """
     Extracts presence data from CSV file and groups it by user_id.

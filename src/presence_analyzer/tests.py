@@ -46,6 +46,7 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         Before each test, set up a environment.
         """
         main.app.config.update({'DATA_CSV': TEST_DATA_CSV})
+        utils._cache = {}
         self.client = main.app.test_client()
 
     def tearDown(self):
@@ -128,7 +129,7 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         Test json response we get for user 10.
         """
         expected_data = utils.group_mean_start_end_by_weekday(utils.get_data()[10])
-        for day, value in expected_data.items():
+        for _, value in expected_data.items():
             value['start'] = value['start'].strftime('%H:%M:%S')
             value['end'] = value['end'].strftime('%H:%M:%S')
 
@@ -174,6 +175,7 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         Before each test, set up a environment.
         """
         main.app.config.update({'DATA_CSV': TEST_DATA_CSV})
+        utils._storage = {}
 
     def tearDown(self):
         """
@@ -323,6 +325,15 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
 
         self.assertEqual(expected_result, result)
 
+    def test_caching(self):
+        """
+        After calling get_data data should appear in cache.
+        """
+        self.assertEqual(utils._storage, {})
+        result = utils.get_data()
+        key = utils.get_key_hash(utils.get_data.__name__)
+        self.assertEqual(result, utils._storage[key]['result'])
+
 
 # We assume urllib is working fine, so we only mock the response in every call.
 class PresenceAnalyzerCronJobTestCase(unittest.TestCase):
@@ -330,8 +341,8 @@ class PresenceAnalyzerCronJobTestCase(unittest.TestCase):
     Test buildout crontabs.
     """
     def setUp(self):
-        with open(TEST_USERS_XML_FILE) as f:
-            self.user_file_contents = f.read()
+        with open(TEST_USERS_XML_FILE) as user_file:
+            self.user_file_contents = user_file.read()
         self.mocked_urllib_read = Mock(
             read=Mock(return_value=self.user_file_contents)
         )
@@ -364,18 +375,6 @@ class PresenceAnalyzerCronJobTestCase(unittest.TestCase):
 
         self.assertTrue(os.path.exists(main.app.config['USERS_XML_FILE']))
         self.assertEqual(self.user_file_contents, self.user_file_contents)
-
-
-class PresenceAnalyzerCronJobTestCase(unittest.TestCase):
-    """
-    Test buildout crontabs
-    """
-    # def setUp(self):
-    #     cron_file = main.app.config.update({'USERS_XML': TEST_USERS_XML})
-
-    def test_downloads_file(self):
-        output = download_xml.run()
-        self.assertIsNotNone(output)
 
 
 def suite():  # pragma: no cover
