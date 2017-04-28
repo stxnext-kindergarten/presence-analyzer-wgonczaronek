@@ -25,7 +25,6 @@ function parseInterval(value) {
                     $.each(result, function(index, value) {
                         value[1] = parseInterval(value[1]);
                     });
-                    console.log(result);
                     var data = new google.visualization.DataTable();
                     data.addColumn('string', 'Weekday');
                     data.addColumn('datetime', 'Mean time (h:m:s)');

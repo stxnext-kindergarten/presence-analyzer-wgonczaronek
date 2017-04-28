@@ -124,7 +124,7 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(expected_data, data)
 
-    def test_start_end_view(self):
+    def test_start_end_weekday_view(self):
         """
         Test json response we get for user 10.
         """
@@ -133,17 +133,50 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
             value['start'] = value['start'].strftime('%H:%M:%S')
             value['end'] = value['end'].strftime('%H:%M:%S')
 
-        response = self.client.get('/api/v1/presence_start_end/10')
+        response = self.client.get('/api/v1/presence_start_end_weekday/10')
         data = json.loads(response.data)
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(expected_data, data)
 
-    def test_start_end_view_for_non_existent_user(self):
+    def test_start_end_weekday_view_for_non_existent_user(self):
+        """
+        Check response for user with id 1 not mentioned in test_data.csv is 404.
+        """
+        response = self.client.get('/api/v1/presence_start_end/1')
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_mean_time_month_view(self):
+        """
+        Test JSON response for user 10.
+        """
+        response = self.client.get('/api/v1/mean_time_month/10')
+
+        received_data = json.loads(response.data)
+        months = utils.group_intervals_by_month(utils.get_data()[10])
+        # +1 because  month_abbr is shifted by 1 to match January with index 1.
+        expected_data = [
+            [calendar.month_abbr[month+1], intervals]
+            for month, intervals in enumerate(months)
+        ]
+
+        for data in expected_data:
+            average_time = utils.convert_seconds_to_time(int(utils.mean(data[1])))
+            data[1] = [
+                average_time.hour,
+                average_time.minute,
+                average_time.second
+            ]
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(expected_data, received_data)
+
+    def test_mean_time_month_for_non_existent_user(self):
         """
         Check response for user with id 1 not mentioned in test_data.csv is 404
         """
-        response = self.client.get('/api/v1/presence_start_end/1')
+        response = self.client.get('/api/v1/mean_time_month/1')
 
         self.assertEqual(response.status_code, 404)
 
@@ -305,6 +338,27 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         data = utils.group_mean_start_end_by_weekday(test_data)
 
         self.assertEqual(data, expected_data)
+
+    def test_group_intervals_by_month(self):
+        """
+        Test if group by month returns expected averages. Test data average time is one hour.
+        """
+        test_data = {
+            datetime.date(2017, 1, 3): {
+                'start': datetime.time(6, 0, 0),
+                'end': datetime.time(7, 30, 0)
+            },
+            datetime.date(2017, 1, 4): {
+                'start': datetime.time(7, 0, 0),
+                'end': datetime.time(7, 30, 0)
+            }
+        }
+        expected_result = [[] for _ in range(12)]
+        expected_result[0] = [1800, 5400]
+
+        result = utils.group_intervals_by_month(test_data)
+
+        self.assertEqual(result, expected_result)
 
     def test_get_user_data(self):
         """

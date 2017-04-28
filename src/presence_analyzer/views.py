@@ -16,8 +16,9 @@ from presence_analyzer.utils import (
     mean,
     group_by_weekday,
     group_mean_start_end_by_weekday,
-    get_user_data
-)
+    get_user_data,
+    group_intervals_by_month,
+    convert_seconds_to_time)
 from .main import app
 
 log = logging.getLogger(__name__)  # pylint: disable=invalid-name
@@ -25,7 +26,7 @@ log = logging.getLogger(__name__)  # pylint: disable=invalid-name
 TEMPLATES = {
     'mean_time_weekday': {
         'name': 'mean_time_weekday',
-        'description': 'Presence mean time',
+        'description': 'Presence mean time by weekday',
         'template': 'mean_time_weekday.html'
     },
     'presence_weekday': {
@@ -37,6 +38,11 @@ TEMPLATES = {
         'name': 'presence_start_end',
         'description': 'Presence start-end',
         'template': 'presence_start_end.html'
+    },
+    'presence_time_month': {
+        'name': 'presence_time_month',
+        'description': 'Presence mean time by month',
+        'template': 'mean_time_month.html'
     }
 }
 
@@ -96,6 +102,35 @@ def mean_time_weekday_api_view(user_id):
     return result
 
 
+@app.route('/api/v1/mean_time_month/<int:user_id>', methods=['GET'])
+@jsonify
+def mean_time_month_api_view(user_id):
+    """
+    Return json response for mean time user with given id has come to and from work.
+    """
+    data = get_data()
+    if user_id not in data:
+        log.debug('User %s not found', user_id)
+        abort(404)
+
+    months = group_intervals_by_month(data[user_id])
+    # +1 because  month_abbr is shifted by 1 to match January with index 1.
+    result = [
+        [calendar.month_abbr[month+1], intervals]
+        for month, intervals in enumerate(months)
+    ]
+
+    for r in result:
+        average_time = convert_seconds_to_time(int(mean(r[1])))
+        r[1] = [
+            average_time.hour,
+            average_time.minute,
+            average_time.second
+        ]
+
+    return result
+
+
 @app.route('/api/v1/presence_weekday/<int:user_id>', methods=['GET'])
 @jsonify
 def presence_weekday_api_view(user_id):
@@ -117,9 +152,9 @@ def presence_weekday_api_view(user_id):
     return result
 
 
-@app.route('/api/v1/presence_start_end/<int:user_id>', methods=['GET'])
+@app.route('/api/v1/presence_start_end_weekday/<int:user_id>', methods=['GET'])
 @jsonify
-def presence_start_end_api_view(user_id):
+def presence_start_end_weekday_api_view(user_id):
     """
     Return json response for mean time user with given id has come to and from work.
     """

@@ -161,6 +161,21 @@ def group_mean_start_end_by_weekday(items):
     return presence_list
 
 
+def group_intervals_by_month(items):
+    """
+    Groups mean presence time by month.
+    """
+
+    result = [[] for _ in range(12)]
+
+    # We take month -1 because January has index 1 and we want it to be 0.
+    for date in items:
+        start = items[date]['start']
+        end = items[date]['end']
+        result[date.month-1].append(interval(start, end))
+    return result
+
+
 def seconds_since_midnight(time):
     """
     Calculates amount of seconds since midnight.
