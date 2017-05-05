@@ -5,6 +5,7 @@ Defines views.
 
 import calendar
 import logging
+import locale
 
 from flask import redirect, abort
 from flask.helpers import url_for
@@ -23,6 +24,7 @@ from presence_analyzer.utils import (
 from .main import app
 
 log = logging.getLogger(__name__)  # pylint: disable=invalid-name
+locale.setlocale(locale.LC_COLLATE, '')
 
 TEMPLATES = {
     'mean_time_weekday': {
@@ -67,20 +69,24 @@ def users_view():
     data = get_data()
     users_data = get_user_data()
 
-    result = []
+    named_users = []
+    unnamed_users = []
 
     for i in data.keys():
         try:
-            result.append({
+            named_users.append({
                 'user_id': i,
                 'name': users_data[i]['name'],
             })
         except KeyError:
-            result.append({
+            unnamed_users.append({
                 'user_id': i,
                 'name': 'User {}'.format(str(i)),
             })
-    return result
+    named_users.sort(key=lambda user_name: user_name['name'], cmp=locale.strcoll)
+    # Users without names should be sorted by ID which is part of their 'names' like User 10.
+    unnamed_users.sort(key=lambda user_id: int(user_id['name'].split()[1]))
+    return named_users + unnamed_users
 
 
 @app.route('/api/v1/mean_time_weekday/<int:user_id>', methods=['GET'])

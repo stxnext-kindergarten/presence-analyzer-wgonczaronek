@@ -10,6 +10,10 @@
             <avatar>/api/images/users/10</avatar>
             <name>Maciej Z.</name>
         </user>
+        <user id="11">
+            <avatar>/api/images/users/11</avatar>
+            <name>Maciej D.</name>
+        </user>
         <user id="12">
             <avatar>/api/images/users/12</avatar>
             <name>Patryk G.</name>
