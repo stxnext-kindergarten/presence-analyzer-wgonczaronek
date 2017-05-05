@@ -1,0 +1,12 @@
+<%inherit file="main.html"/>
+
+<%block name="additional_scripts">
+    <script type="text/javascript">
+        google.load("visualization", "1", {packages:["corechart"], 'language': 'pl'});
+    </script>
+    <script src="${url_for('static', filename='js/mean_time_month.js')}"></script>
+</%block>
+
+<%block name='content_heading'>
+    Presence mean time by month
+</%block>

@@ -22,7 +22,9 @@ lib64
 pip-log.txt
 
 # Unit test / coverage reports
+htmlcov
 .coverage
+.coveragerc
 .tox
 nosetests.xml
 
@@ -33,3 +35,12 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+# PyCharm files
+.idea
+
+# Pep-8 tests
+.cache
+
+# File downloaded from internet, no need to store it.
+users.xml
