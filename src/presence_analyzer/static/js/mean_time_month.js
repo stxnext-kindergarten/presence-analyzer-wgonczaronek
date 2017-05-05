@@ -43,6 +43,8 @@
                     loading.hide();
                     chart.draw(data, options);
                 });
+            } else {
+                chart_div.hide();
             }
         });
     });
