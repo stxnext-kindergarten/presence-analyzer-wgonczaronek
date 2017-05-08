@@ -12,14 +12,14 @@
 
         $('#user_id').change(function(){
 
-            var selectedUser = $("#user_id").val(),
+            var $selectedUser = $("#user_id").val(),
                 $chartDiv = $('#chart_div');
 
-            if(selectedUser) {
+            if($selectedUser) {
                 loading.show();
                 $chartDiv.hide();
 
-                $.getJSON("/api/v1/presence_start_end/"+selectedUser, function(result) {
+                $.getJSON("/api/v1/presence_start_end/"+$selectedUser, function(result) {
                     var options, chart,
                         data = new google.visualization.DataTable(),
                         formatter = new google.visualization.DateFormat({pattern: 'HH:mm:ss'}),
@@ -49,6 +49,8 @@
                     chart = new google.visualization.Timeline($chartDiv[0]);
                     chart.draw(data, options);
                 });
+            } else {
+                $chartDiv.hide();
             }
         });
     });

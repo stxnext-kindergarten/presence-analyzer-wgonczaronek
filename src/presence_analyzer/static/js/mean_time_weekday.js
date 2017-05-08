@@ -16,30 +16,33 @@ function parseInterval(value) {
             loading.hide();
         });
         $('#user_id').change(function(){
-            var selected_user = $("#user_id").val();
-            var chart_div = $('#chart_div');
-            if(selected_user) {
+            var $selectedUser = $("#user_id").val(),
+                $chartDiv = $('#chart_div');
+            if($selectedUser) {
                 loading.show();
-                chart_div.hide();
-                $.getJSON("/api/v1/mean_time_weekday/"+selected_user, function(result) {
+                $chartDiv.hide();
+                $.getJSON("/api/v1/mean_time_weekday/"+$selectedUser, function(result) {
                     $.each(result, function(index, value) {
                         value[1] = parseInterval(value[1]);
-                    });
-                    var data = new google.visualization.DataTable();
+                    }),
+                    formatter = new google.visualization.DateFormat({pattern: 'HH:mm:ss'}),
+                    data = new google.visualization.DataTable(),
+                               options = {
+                                   hAxis: {title: 'Weekday'}
+                               },
+                    chart = new google.visualization.ColumnChart($chartDiv[0]);
+
                     data.addColumn('string', 'Weekday');
                     data.addColumn('datetime', 'Mean time (h:m:s)');
                     data.addRows(result);
-                    var options = {
-                        hAxis: {title: 'Weekday'}
-                    };
-                    var formatter = new google.visualization.DateFormat({pattern: 'HH:mm:ss'});
                     formatter.format(data, 1);
 
-                    chart_div.show();
+                    $chartDiv.show();
                     loading.hide();
-                    var chart = new google.visualization.ColumnChart(chart_div[0]);
                     chart.draw(data, options);
                 });
+            } else {
+                $chartDiv.hide();
             }
         });
     });
