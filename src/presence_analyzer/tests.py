@@ -9,6 +9,7 @@ import datetime
 import json
 import os.path
 import unittest
+import locale
 
 from mock import patch
 from mock.mock import Mock
@@ -33,6 +34,8 @@ INVALID_FORMAT_TEST_DATA = os.path.join(
 TEST_USERS_XML_FILE = os.path.join(
     os.path.dirname(__file__), '..', '..', 'runtime', 'data', 'test_data', 'test_users.xml'
 )
+
+locale.setlocale(locale.LC_COLLATE, ('en', 'utf-8'))
 
 
 # pylint: disable=maybe-no-member, too-many-public-methods
@@ -65,16 +68,19 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
 
     def test_api_users(self):
         """
-        Test users listing.
+        Test users listing. The request for users should return result sorted by names with users
+        with not found names in the end, so: Adam A, Zenon Z, User 1, User 12.
         """
         resp = self.client.get('/api/v1/users')
         self.assertEqual(resp.status_code, 200)
 
         self.assertEqual(resp.content_type, 'application/json')
         data = json.loads(resp.data)
-        self.assertEqual(len(data), 2)
-        self.assertDictEqual(data[0], {u'user_id': 10, u'name': u'Maciej Z.'})
-        self.assertDictEqual(data[1], {u'user_id': 11, u'name': u'User 11'})
+        self.assertEqual(len(data), 4)
+        self.assertDictEqual(data[0], {'user_id': 11, 'name': 'Maciej D.'})
+        self.assertDictEqual(data[1], {'user_id': 10, 'name': 'Maciej Z.'})
+        self.assertDictEqual(data[2], {'user_id': 13, 'name': 'User 13'})
+        self.assertDictEqual(data[3], {'user_id': 130, 'name': 'User 130'})
 
     def test_presence_weekday_non_existent_id(self):
         """
@@ -216,7 +222,7 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         sample_date = datetime.date(2013, 9, 10)
 
         self.assertIsInstance(data, dict)
-        self.assertItemsEqual(data.keys(), [10, 11])
+        self.assertItemsEqual(data.keys(), [10, 11, 13, 130])
         self.assertIn(sample_date, data[10])
         self.assertItemsEqual(data[10][sample_date].keys(), ['start', 'end'])
         self.assertEqual(
@@ -364,9 +370,12 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
             12: {
                 'avatar_url': '/api/images/users/12',
                 'name': 'Patryk G.'
+            },
+            11: {
+                'avatar_url': '/api/images/users/11',
+                'name': 'Maciej D.'
             }
         }
-
         result = utils.get_user_data()
 
         self.assertEqual(expected_result, result)

@@ -37,7 +37,7 @@ def jsonify(function):
         This docstring will be overridden by @wraps decorator.
         """
         return Response(
-            dumps(function(*args, **kwargs)),
+            dumps(function(*args, **kwargs), sort_keys=True),
             mimetype='application/json'
         )
     return inner
