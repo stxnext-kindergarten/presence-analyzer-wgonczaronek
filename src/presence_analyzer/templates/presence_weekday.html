@@ -1,0 +1,12 @@
+<%inherit file="main.html"/>
+
+<%block name="additional_scripts">
+    <script type="text/javascript">
+        google.load("visualization", "1", {packages:["corechart", "timeline"], 'language': 'pl'});
+    </script>
+    <script src="${url_for('static', filename='js/presence_weekday.js')}"></script>
+</%block>
+
+<%block name='content_heading'>
+    Presence by weekday
+</%block>
