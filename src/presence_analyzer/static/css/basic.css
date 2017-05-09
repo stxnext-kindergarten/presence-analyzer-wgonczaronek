@@ -4,8 +4,7 @@ body {
 }
 
 #main {
-    width: 950px;
-    margin: 2em auto;
+    display: table;
     padding: 0 2em;
 }
 
@@ -30,6 +29,7 @@ body {
 }
 
 #header li {
+    display: table-cell;
     float: left;
     border: 1px solid #bbb;
     border-bottom-width: 0;
